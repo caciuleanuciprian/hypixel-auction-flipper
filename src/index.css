@@ -15,56 +15,92 @@
   -webkit-text-size-adjust: 100%;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-  margin: 0;
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+.lowestBin {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 250px;
+  height: 350px;
+  flex-wrap: wrap;
+  color: black;
+  border: 2px solid black;
+  border-radius: 15px;
+  text-align: center;
+  font-size: 24px;
+  padding: 36px;
+  margin: 12px;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.lowestBinContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100vw;
+  height: 100vh;
+}
+
+.lowestBin--COMMON {
+  background-color: #ffffff;
+}
+
+.lowestBin--UNCOMMON {
+  background-color: #00ff15;
+}
+
+.lowestBin--RARE {
+  background-color: #3c6aff;
+}
+
+.lowestBin--EPIC {
+  background-color: #8631ad;
+}
+
+.lowestBin--LEGENDARY {
+  background-color: #ffae00;
+}
+
+.lowestBin--SPECIAL {
+  background-color: #ff0000;
+}
+
+.lowestBin--MYTHIC {
+  background-color: #00c3ff;
+}
+
+.copy {
+  width: 150px;
+  height: 50px;
+  padding: 0 15px;
+  color: white;
+  background-color: red;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.CTA {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 350px;
+  height: 100px;
+  cursor: pointer;
 }

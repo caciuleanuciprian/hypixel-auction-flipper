@@ -1,32 +1,58 @@
-import { useQuery } from "react-query";
-import axios from "axios";
+import { useEffect, useState, memo } from "react";
 
-const LowestBin = () => {
-  const { isLoading, isSuccess, refetch, error, data }: any = useQuery(
-    "lowestBin",
-    () =>
-      axios
-        .get("https://moulberry.codes/lowestbin.json", {
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json",
-          },
-          withCredentials: false,
-        })
-        .then((res) => console.log(res)),
-    { enabled: true, cacheTime: 1000 * 60 }
-  );
-  if (isSuccess) {
+interface LowestBin {
+  key: string;
+  uuid: string;
+  auctioneer: string;
+  profile_id: string;
+  item_name: string;
+  starting_bid: number;
+  tier: Tier;
+}
+
+enum Tier {
+  Common = "COMMON",
+  Uncommon = "UNCOMMON",
+  Rare = "RARE",
+  Epic = "EPIC",
+  Legendary = "LEGENDARY",
+  Special = "SPECIAL",
+  Mythic = "MYTHIC",
+}
+
+const LowestBin = memo(
+  ({
+    uuid,
+    auctioneer,
+    profile_id,
+    item_name,
+    starting_bid,
+    tier,
+  }: LowestBin) => {
+    let dollarUSLocale = Intl.NumberFormat("en-US");
+
     return (
-      <div>
-        <h1>SUCCESS Refetching Auction House in {timer}</h1>
+      <div
+        onClick={() => {
+          navigator.clipboard.writeText("/viewauction " + uuid);
+        }}
+        className={`lowestBin lowestBin--${tier}`}
+      >
+        <p>
+          {item_name} - {tier}
+        </p>
+        <p>{dollarUSLocale.format(starting_bid)}</p>
+        <button
+          className="copy"
+          onClick={() => {
+            navigator.clipboard.writeText("/viewauction " + uuid);
+          }}
+        >
+          Copy AH Link
+        </button>
       </div>
     );
   }
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
-  return <div></div>;
-};
+);
 
 export default LowestBin;

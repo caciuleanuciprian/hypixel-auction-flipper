@@ -1,46 +1,91 @@
 import { useQuery } from "react-query";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState, useRef } from "react";
+import uuid from "react-uuid";
+import { useTimer } from "react-timer-hook";
 
-const Container = () => {
-  const [timer, setTimer] = useState(0);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimer((timer) => timer - 1);
-    }, 1000);
-    if (timer === 0) {
-      refetch();
-      setTimer(60);
-    }
-    return () => clearInterval(interval);
-  }, [timer]);
-  const { isLoading, isSuccess, refetch, error, data }: any = useQuery(
+import LowestBin from "./LowestBin";
+const Container = memo(() => {
+  const flips: any[] = [];
+  const { seconds, start, restart, isRunning } = useTimer({
+    // @ts-ignore
+    expiryTimestamp: new Date().getTime() + 60 * 1000 * 480,
+    onExpire: () => console.log("onExpire called"),
+  });
+
+  const [currentLowestBin, setCurrentLowestBin] = useState<any>(
+    // @ts-ignore
+    JSON.parse(localStorage.getItem("currentLowestBin")) || ""
+  );
+  const { isLoading, isSuccess, error, data }: any = useQuery(
     "auctions",
     () =>
       axios
-        .get("https://api.hypixel.net/skyblock/auctions")
-        .then((res) => res.data.auctions),
-    { enabled: false, cacheTime: 1000 * 60 }
+        .get("http://localhost:5000")
+        .then((res) => res.data)
+        .catch((err) => console.log(err)),
+    { refetchInterval: 5000 }
   );
+  const time = new Date();
+  time.setSeconds(time.getSeconds() + 300);
+  if (isRunning === false) {
+    localStorage.setItem("currentLowestBin", "");
+    localStorage.setItem("currentLowestBin", JSON.stringify(data));
+    restart(time);
+  }
+  const bottom = useRef<HTMLDivElement>(null);
+  const [scroll, setScroll] = useState(false);
+  const scrollToBottom = () => {
+    if (bottom.current !== null) {
+      bottom.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+  useEffect(() => {
+    if (scroll === true) {
+      scrollToBottom();
+    }
+  }, [flips.length]);
+
+  for (let i = 0; i < data?.length; i++) {
+    for (let j = 0; j < currentLowestBin.length; j++) {
+      if (
+        data[i].item_name === currentLowestBin[j].item_name &&
+        data[i].starting_bid < currentLowestBin[j].starting_bid * 0.5 &&
+        data[i].claimed === false
+      ) {
+        flips.push(data[i]);
+      }
+    }
+  }
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
   if (isSuccess) {
     return (
-      <div>
-        {data.map((auction: any) => {
-          if (auction.bin === true && auction.claimed === false) {
-            return (
-              <div key={auction.uuid}>
-                {auction.item_name} - {auction.starting_bid}
-              </div>
-            );
-          }
+      <div className="lowestBinContainer">
+        {flips.map((auction: any) => {
+          return (
+            <LowestBin
+              key={uuid()}
+              uuid={auction.uuid}
+              auctioneer={auction.auctioneer}
+              profile_id={auction.profile_id}
+              item_name={auction.item_name}
+              starting_bid={auction.starting_bid}
+              tier={auction.tier}
+            />
+          );
         })}
-        <h1>SUCCESS Refetching Auction House in {timer}</h1>
+        <div ref={bottom}></div>
+        <button className="CTA" onClick={() => setScroll(!scroll)}>
+          Toggle Scroll To Bottom
+          <br />
+          <br />
+          {seconds}s until auction refresh
+        </button>
       </div>
     );
   }
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
-  return <div></div>;
-};
+  return <div>Something went wrong.</div>;
+});
 export default Container;
