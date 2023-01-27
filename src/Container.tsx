@@ -15,24 +15,22 @@ const Container = memo(() => {
 
   const [currentLowestBin, setCurrentLowestBin] = useState<any>(
     // @ts-ignore
-    JSON.parse(localStorage.getItem("currentLowestBin"))
+    JSON.parse(localStorage.getItem("currentLowestBin")) || ""
   );
   const { isLoading, isSuccess, error, data }: any = useQuery(
     "auctions",
     () =>
       axios
-        .get("https://hypixel-auction-api.vercel.app/")
+        .get("https://hypixel-auction-api-dgur.vercel.app/")
         .then((res) => res.data)
         .catch((err) => console.log(err)),
     { refetchInterval: 5000 }
   );
   const time = new Date();
-  time.setSeconds(time.getSeconds() + 60);
+  time.setSeconds(time.getSeconds() + 300);
   if (isRunning === false) {
     localStorage.setItem("currentLowestBin", "");
     localStorage.setItem("currentLowestBin", JSON.stringify(data));
-    // @ts-ignore
-    setCurrentLowestBin(JSON.parse(localStorage.getItem("currentLowestBin")));
     restart(time);
   }
   const bottom = useRef<HTMLDivElement>(null);
@@ -48,29 +46,20 @@ const Container = memo(() => {
     }
   }, [flips.length]);
 
-  if (currentLowestBin !== null) {
-    for (let i = 0; i < data?.length; i++) {
-      for (let j = 0; j < currentLowestBin.length; j++) {
-        if (
-          data[i].item_name === currentLowestBin[j].item_name &&
-          data[i].starting_bid < currentLowestBin[j].starting_bid * 0.5 &&
-          data[i].claimed === false
-        ) {
-          flips.push(data[i]);
-        }
+  for (let i = 0; i < data?.length; i++) {
+    for (let j = 0; j < currentLowestBin.length; j++) {
+      if (
+        data[i].item_name === currentLowestBin[j].item_name &&
+        data[i].starting_bid < currentLowestBin[j].starting_bid * 0.5 &&
+        data[i].claimed === false
+      ) {
+        flips.push(data[i]);
       }
     }
   }
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
   if (isSuccess) {
-    if (currentLowestBin === null) {
-      localStorage.setItem("currentLowestBin", JSON.stringify(data));
-      setCurrentLowestBin(
-        // @ts-ignore
-        JSON.parse(localStorage.getItem("currentLowestBin"))
-      );
-    }
     return (
       <div className="lowestBinContainer">
         {flips.map((auction: any) => {
