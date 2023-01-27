@@ -7,9 +7,9 @@ import { useTimer } from "react-timer-hook";
 import LowestBin from "./LowestBin";
 const Container = memo(() => {
   const flips: any[] = [];
-  const { seconds, start, restart, isRunning } = useTimer({
+  const { seconds, minutes, start, restart, isRunning } = useTimer({
     // @ts-ignore
-    expiryTimestamp: new Date().getTime() + 60 * 1000 * 480,
+    expiryTimestamp: new Date().getTime() + 5 * 1000,
     onExpire: () => console.log("onExpire called"),
   });
 
@@ -21,7 +21,7 @@ const Container = memo(() => {
     "auctions",
     () =>
       axios
-        .get("https://hypixel-auction-api-dgur.vercel.app/")
+        .get("https://hypixel-auction-api.vercel.app/")
         .then((res) => res.data)
         .catch((err) => console.log(err)),
     { refetchInterval: 5000 }
@@ -29,7 +29,6 @@ const Container = memo(() => {
   const time = new Date();
   time.setSeconds(time.getSeconds() + 300);
   if (isRunning === false) {
-    localStorage.setItem("currentLowestBin", "");
     localStorage.setItem("currentLowestBin", JSON.stringify(data));
     restart(time);
   }
@@ -80,7 +79,7 @@ const Container = memo(() => {
           Toggle Scroll To Bottom
           <br />
           <br />
-          {seconds}s until auction refresh
+          {minutes}:{seconds}s until auction refresh
         </button>
       </div>
     );
