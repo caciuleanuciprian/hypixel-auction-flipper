@@ -47,12 +47,12 @@ const Container = memo(() => {
 
   for (let i = 0; i < data?.length; i++) {
     for (let j = 0; j < currentLowestBin.length; j++) {
-      if (
-        data[i].item_name === currentLowestBin[j].item_name &&
-        data[i].starting_bid < currentLowestBin[j].starting_bid * 0.5 &&
-        data[i].claimed === false
-      ) {
-        flips.push(data[i]);
+      if (data[i].item_name === currentLowestBin[j].item_name ) {
+          if(data[i].starting_bid < currentLowestBin[j].starting_bid * 0.5) { 
+            if(data[i].claimed === false) {
+              flips.push(data[i]);
+            }
+          }
       }
     }
   }
