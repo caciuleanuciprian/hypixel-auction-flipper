@@ -27,7 +27,7 @@ const Container = memo(() => {
     { refetchInterval: 5000 }
   );
   const time = new Date();
-  time.setSeconds(time.getSeconds() + 300);
+  time.setSeconds(time.getSeconds() + 90);
   if (isRunning === false) {
     localStorage.setItem("currentLowestBin", JSON.stringify(data));
     restart(time);
