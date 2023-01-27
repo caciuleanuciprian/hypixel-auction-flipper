@@ -21,7 +21,7 @@ const Container = memo(() => {
     "auctions",
     () =>
       axios
-        .get("http://localhost:5000")
+        .get("https://hypixel-auction-api-dgur.vercel.app/")
         .then((res) => res.data)
         .catch((err) => console.log(err)),
     { refetchInterval: 5000 }
