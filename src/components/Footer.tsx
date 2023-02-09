@@ -12,10 +12,10 @@ const Footer = () => {
         <a className="socialText" href="">
           Terms & Conditions
         </a> */}
-        <a className="social" href="">
+        <a className="social" href="https://discord.gg/Tn6MvBjsX3">
           <FontAwesomeIcon icon={faDiscord} />
         </a>
-        <a className="social" href="">
+        <a className="social" href="https://github.com/caciuleanuciprian">
           <FontAwesomeIcon icon={faGithub} />
         </a>
       </div>
