@@ -1,5 +1,4 @@
-import { useEffect, useState, memo } from "react";
-
+import logo from "../src/assets/logo.svg";
 interface LowestBin {
   key: string;
   uuid: string;
@@ -8,6 +7,7 @@ interface LowestBin {
   item_name: string;
   starting_bid: number;
   tier: Tier;
+  binPrice: number;
 }
 
 enum Tier {
@@ -20,39 +20,47 @@ enum Tier {
   Mythic = "MYTHIC",
 }
 
-const LowestBin = memo(
-  ({
-    uuid,
-    auctioneer,
-    profile_id,
-    item_name,
-    starting_bid,
-    tier,
-  }: LowestBin) => {
-    let dollarUSLocale = Intl.NumberFormat("en-US");
+const LowestBin = ({
+  uuid,
+  item_name,
+  starting_bid,
+  tier,
+  binPrice,
+}: LowestBin) => {
+  let dollarUSLocale = Intl.NumberFormat("en-US");
 
-    return (
-      <div
+  return (
+    <div
+      onClick={() => {
+        navigator.clipboard.writeText("/viewauction " + uuid);
+      }}
+      className={`lowestBin`}
+    >
+      <p className="itemName">{item_name}</p>
+      <img className="itemImage" src={logo} alt="Logo" />
+      <p className={`itemTier tier--${tier}`}>{tier}</p>
+      <div className="itemValues">
+        <p className="itemBinPrice">
+          Lowest Bin: <br />~{dollarUSLocale.format(binPrice)}
+        </p>
+        <p className="itemPrice">
+          Price: <br />
+          {dollarUSLocale.format(starting_bid)}
+        </p>
+      </div>
+      <p className="itemProfit">
+        Profit: <br />~{dollarUSLocale.format(binPrice - starting_bid)}
+      </p>
+      <button
+        className="copy"
         onClick={() => {
           navigator.clipboard.writeText("/viewauction " + uuid);
         }}
-        className={`lowestBin lowestBin--${tier}`}
       >
-        <p>
-          {item_name} - {tier}
-        </p>
-        <p>{dollarUSLocale.format(starting_bid)}</p>
-        <button
-          className="copy"
-          onClick={() => {
-            navigator.clipboard.writeText("/viewauction " + uuid);
-          }}
-        >
-          Copy AH Link
-        </button>
-      </div>
-    );
-  }
-);
+        Copy AH Link
+      </button>
+    </div>
+  );
+};
 
 export default LowestBin;
