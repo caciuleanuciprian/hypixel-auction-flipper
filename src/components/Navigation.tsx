@@ -3,11 +3,7 @@ const Navigation = () => {
   return (
     <div className="navigation">
       <nav className="nav">
-        <a
-          className="navLogoContainer"
-          href="#"
-          onClick={() => console.log("logo")}
-        >
+        <a className="navLogoContainer" href="#">
           <img className="navLogo" src={logo} alt="Logo" />
         </a>
         <ul className="linksList">

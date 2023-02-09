@@ -9,12 +9,16 @@ const LowBinData = () => {
   if (fetchedData === undefined && !localStorage.getItem("firstTime")) {
     async function fetchFirstVisit() {
       const res = await axios
-        .get(`http://localhost:8080/bin`)
-        .then((res) => res.data)
+        .get(`https://oyster-app-tmgo4.ondigitalocean.app/bin`)
+        .then((res) =>
+          localStorage.setItem("lowestBin", JSON.stringify(res.data))
+        )
         .catch((err) => err);
-      setFetchedData(res);
-      localStorage.setItem("lowestBin", JSON.stringify(fetchedData));
-      localStorage.setItem("firstTime", "false");
+      if (fetchedData) {
+        setFetchedData(res);
+        // localStorage.setItem("lowestBin", JSON.stringify(fetchedData));
+        localStorage.setItem("firstTime", "false");
+      }
     }
     fetchFirstVisit();
     setTimeout(function () {
@@ -26,11 +30,11 @@ const LowBinData = () => {
   useEffect(() => {
     let interval = setInterval(async () => {
       const res = await axios
-        .get(`http://localhost:8080/bin`)
+        .get(`https://oyster-app-tmgo4.ondigitalocean.app/bin`)
         .then((res) => res.data)
         .catch((err) => err);
       setFetchedData(res);
-    }, 300000);
+    }, 90000);
     return () => {
       clearInterval(interval);
     };
@@ -55,7 +59,7 @@ const LowBinData = () => {
         <div className="container">
           <div className="firstTimeContainer">
             <p className="firstTimeMessage">
-              As this is your first time using the flipper, it requires 60s to
+              As this is your first time using the flipper, it requires 30s to
               fetch everything. This will only happen on your first usage.
             </p>
             <Loader />
