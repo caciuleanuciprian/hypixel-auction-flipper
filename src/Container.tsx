@@ -60,38 +60,36 @@ const Container = () => {
     return <>Error: {error}</>;
   }
   if (isSuccess) {
-    if (localStorage.getItem("refreshed")) {
-      if (data?.length > 0) {
-        findFlips();
-        return (
-          <div className="container">
-            <button className="scrollBtn" onClick={scrollToLast}>
-              Scroll to last flip
-            </button>
-            <div className="row">
-              {flips.length > 0 ? (
-                flips.map((auction: any) => {
-                  return (
-                    <LowestBin
-                      key={uuid()}
-                      uuid={auction.uuid}
-                      auctioneer={auction.auctioneer}
-                      profile_id={auction.profile_id}
-                      item_name={auction.item_name}
-                      starting_bid={auction.starting_bid}
-                      tier={auction.tier}
-                      binPrice={auction.binPrice}
-                    />
-                  );
-                })
-              ) : (
-                <LowestBinPlaceholder />
-              )}
-              <div id="scroll"></div>
-            </div>
+    if (data?.length > 0) {
+      findFlips();
+      return (
+        <div className="container">
+          <button className="scrollBtn" onClick={scrollToLast}>
+            Scroll to last flip
+          </button>
+          <div className="row">
+            {flips.length > 0 ? (
+              flips.map((auction: any) => {
+                return (
+                  <LowestBin
+                    key={uuid()}
+                    uuid={auction.uuid}
+                    auctioneer={auction.auctioneer}
+                    profile_id={auction.profile_id}
+                    item_name={auction.item_name}
+                    starting_bid={auction.starting_bid}
+                    tier={auction.tier}
+                    binPrice={auction.binPrice}
+                  />
+                );
+              })
+            ) : (
+              <LowestBinPlaceholder />
+            )}
+            <div id="scroll"></div>
           </div>
-        );
-      }
+        </div>
+      );
     }
   }
   return <></>;

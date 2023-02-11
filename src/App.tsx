@@ -11,8 +11,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Navigation />
-      <Container />
       <LowBinData />
+      <Container />
       <Footer />
     </QueryClientProvider>
   );
