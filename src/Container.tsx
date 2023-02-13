@@ -4,6 +4,7 @@ import uuid from "react-uuid";
 import LowestBinPlaceholder from "./components/LowestBinPlaceholder";
 
 import LowestBin from "./LowestBin";
+import Loader from "./components/Loader";
 
 const Container = () => {
   const flips: any[] = [];
@@ -20,7 +21,11 @@ const Container = () => {
         .get("https://api.hypixel.net/skyblock/auctions")
         .then((res) => res.data.auctions)
         .catch((err) => console.log(err)),
-    { refetchInterval: 15000 }
+    {
+      refetchInterval: 15000,
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+    }
   );
 
   function findFlips() {
@@ -36,7 +41,6 @@ const Container = () => {
                 data[i].starting_bid <
                 currentLowestBin[j].starting_bid * 0.5
               ) {
-                console.log(data[i], currentLowestBin[j]);
                 if (data[i].claimed == false) {
                   flips.push({
                     ...data[i],
@@ -50,48 +54,60 @@ const Container = () => {
     }
   }
 
-  console.log(flips);
-
   if (isLoading) {
-    return <></>;
+    return (
+      <div className="container">
+        <div className="row">
+          <LowestBinPlaceholder />
+        </div>
+      </div>
+    );
   }
   if (error) {
-    console.log(error);
     return <>Error: {error}</>;
   }
   if (isSuccess) {
     if (data?.length > 0) {
-      findFlips();
-      return (
-        <div className="container">
-          <button className="scrollBtn" onClick={scrollToLast}>
-            Scroll to last flip
-          </button>
-          <div className="row">
-            {flips.length > 0 ? (
-              flips.map((auction: any) => {
-                return (
-                  <LowestBin
-                    key={uuid()}
-                    uuid={auction.uuid}
-                    auctioneer={auction.auctioneer}
-                    profile_id={auction.profile_id}
-                    item_name={auction.item_name}
-                    starting_bid={auction.starting_bid}
-                    tier={auction.tier}
-                    binPrice={auction.binPrice}
-                  />
-                );
-              })
-            ) : (
-              <LowestBinPlaceholder />
-            )}
-            <div id="scroll"></div>
+      if (
+        localStorage.getItem("refreshed") ||
+        localStorage.getItem("lowestBin")
+      ) {
+        findFlips();
+        return (
+          <div className="container">
+            <button className="scrollBtn" onClick={scrollToLast}>
+              Scroll to last flip
+            </button>
+            <div className="row">
+              {flips.length > 0 ? (
+                flips.map((auction: any) => {
+                  return (
+                    <LowestBin
+                      key={uuid()}
+                      uuid={auction.uuid}
+                      auctioneer={auction.auctioneer}
+                      profile_id={auction.profile_id}
+                      item_name={auction.item_name}
+                      starting_bid={auction.starting_bid}
+                      tier={auction.tier}
+                      binPrice={auction.binPrice}
+                    />
+                  );
+                })
+              ) : (
+                <LowestBinPlaceholder />
+              )}
+              <div id="scroll"></div>
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
     }
   }
-  return <></>;
+  return (
+    <div className="container">
+      <Loader />
+    </div>
+  );
 };
 export default Container;

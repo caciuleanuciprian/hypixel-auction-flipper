@@ -16,7 +16,6 @@ const LowBinData = () => {
         .catch((err) => err);
       if (fetchedData) {
         setFetchedData(res);
-        // localStorage.setItem("lowestBin", JSON.stringify(fetchedData));
         localStorage.setItem("firstTime", "false");
       }
     }
@@ -51,15 +50,13 @@ const LowBinData = () => {
 
   return (
     <div>
-      {localStorage.getItem("firstTime") &&
-      localStorage.getItem("refreshed") &&
-      localStorage.getItem("lowestBin") ? (
+      {localStorage.getItem("lowestBin") ? (
         ""
       ) : (
         <div className="container">
           <div className="firstTimeContainer">
             <p className="firstTimeMessage">
-              As this is your first time using the flipper, it requires 30s to
+              As this is your first time using the flipper, it requires ~30s to
               fetch everything. This will only happen on your first usage.
             </p>
             <Loader />
